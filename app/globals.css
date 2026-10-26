@@ -31,6 +31,7 @@ label small{font-weight:400;color:var(--muted);font-size:11px}
 .switch-mode{text-align:center;font-size:12px;color:var(--muted);margin:20px 0 0}
 .switch-mode button{border:0;background:none;padding:0;color:#8da9ff;font-weight:700}
 .legal{text-align:center;color:#666f84;font-size:10px;line-height:1.6;margin:20px 0 0}
+.account-detail{display:grid;gap:7px;margin:22px 0;padding:15px;border:1px solid var(--line);border-radius:9px;background:#080b14}.account-detail span{font-size:11px;color:var(--muted)}.account-detail strong{font-size:13px;overflow-wrap:anywhere;margin-bottom:8px}.account-detail strong:last-child{margin-bottom:0}
 footer{font-size:9px;letter-spacing:.16em;color:#5f6880;margin-top:22px}
 footer span{padding:0 6px;color:#536dbb}
 @media(max-width:480px){.shell{padding:20px 14px}.auth-card{padding:28px 21px 24px;border-radius:15px}h1{font-size:25px}}
