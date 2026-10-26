@@ -12,6 +12,18 @@ const registrationSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  // Reject cross-origin JSON submissions. A managed rate limiter is still required before public production use.
+  const origin = request.headers.get("origin");
+  if (origin) {
+    try {
+      if (new URL(origin).origin !== new URL(request.url).origin) {
+        return NextResponse.json({ error: "Nguồn yêu cầu không hợp lệ." }, { status: 403 });
+      }
+    } catch {
+      return NextResponse.json({ error: "Nguồn yêu cầu không hợp lệ." }, { status: 403 });
+    }
+  }
+
   let body: unknown;
   try {
     body = await request.json();
