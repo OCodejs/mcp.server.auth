@@ -28,7 +28,7 @@ export default function Home() {
         if (!response.ok) throw new Error(result.error ?? "Đăng ký thất bại.");
       }
       const result = await signIn("credentials", {
-        email, password, redirect: false, callbackUrl: "/"
+        email, password, redirect: true, callbackUrl: "/account"
       });
       if (result?.error) throw new Error("Email hoặc mật khẩu không chính xác.");
       setMessage(mode === "signup" ? "Tài khoản đã tạo. Cần cấu hình trang ứng dụng sau đăng nhập." : "Đăng nhập thành công.");
@@ -43,7 +43,7 @@ export default function Home() {
     setBusy(true);
     setMessage("");
     try {
-      await signIn(providerName, { callbackUrl: "/" });
+      await signIn(providerName, { callbackUrl: "/account" });
     } catch {
       setMessage("Không thể bắt đầu OAuth. Hãy kiểm tra biến môi trường của provider.");
       setBusy(false);
