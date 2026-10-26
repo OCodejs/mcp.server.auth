@@ -27,14 +27,21 @@ export default function Home() {
         const result = await response.json();
         if (!response.ok) throw new Error(result.error ?? "Đăng ký thất bại.");
       }
+
       const result = await signIn("credentials", {
-        email, password, redirect: true, callbackUrl: "/account"
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/account"
       });
-      if (result?.error) throw new Error("Email hoặc mật khẩu không chính xác.");
-      setMessage(mode === "signup" ? "Tài khoản đã tạo. Cần cấu hình trang ứng dụng sau đăng nhập." : "Đăng nhập thành công.");
+
+      if (!result || result.error || !result.ok) {
+        throw new Error("Email hoặc mật khẩu không chính xác.");
+      }
+
+      window.location.assign(result.url || "/account");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Có lỗi xảy ra.");
-    } finally {
       setBusy(false);
     }
   }
