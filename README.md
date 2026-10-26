@@ -5,7 +5,7 @@ Dark, responsive authentication foundation for the Velclaw ecosystem.
 ## Included
 
 - Google OAuth and GitHub OAuth using Auth.js.
-- Email/password registration and login.
+- Email/password registration and login, with a protected account page and sign-out.
 - Password hashing with bcrypt (12 rounds); passwords are never stored in plaintext.
 - Prisma/PostgreSQL persistence for users, provider accounts, and sessions.
 - Environment-variable configuration; no real credentials belong in Git.
@@ -37,4 +37,4 @@ This branch is not a production release. Before connecting it to the existing Ve
 
 ## Important remaining hardening
 
-Before public production use, add rate limiting for registration/login, email verification and password reset, CSRF/origin review for custom endpoints, automated tests, and a dedicated post-login destination. OAuth credentials and database connectivity must be configured in Vercel before those flows can work end-to-end.
+Before public production use, add a managed rate limiter for registration/login, email verification and password reset, automated tests, and end-to-end verification. The registration endpoint rejects mismatched Origin headers, but this is not a substitute for rate limiting. OAuth credentials and database connectivity must be configured in Vercel before those flows can work end-to-end.
