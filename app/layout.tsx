@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MCP Auth — Secure Identity Portal",
-  description: "Cổng xác thực tập trung, an toàn cho các dịch vụ MCP.",
-  applicationName: "MCP Auth",
+  title: "OCodeJS — Auth",
+  description: "Sign in or create your OCodeJS account.",
+  applicationName: "OCodeJS",
   robots: { index: false, follow: false }
 };
 
@@ -15,7 +15,7 @@ export const viewport: Viewport = {
   maximumScale: 0.95,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#070809"
+  themeColor: "#000000"
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
