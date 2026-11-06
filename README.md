@@ -1,4 +1,4 @@
-# Velclaw Identity Auth
+# MCP Server Auth
 
 Dark, responsive authentication foundation for the Velclaw ecosystem.
 
@@ -9,19 +9,28 @@ Dark, responsive authentication foundation for the Velclaw ecosystem.
 - Password hashing with bcrypt (12 rounds); passwords are never stored in plaintext.
 - Prisma/PostgreSQL persistence for users, provider accounts, and sessions.
 - Environment-variable configuration; no real credentials belong in Git.
-- Separate feature branch so the current production deployment is not overwritten.
 
 ## Required environment variables
 
-See [`.env.example`](./.env.example). Configure values in local environment or Vercel project settings; do not commit secrets.
+See [`.env.example`](./.env.example). Never commit real credentials.
 
-- `DATABASE_URL`: PostgreSQL URL.
+- `DATABASE_URL`: PostgreSQL connection string.
 - `AUTH_SECRET`: cryptographically random secret.
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET`: Google OAuth app credentials.
 - `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET`: GitHub OAuth app credentials.
-- `AUTH_URL`: canonical application URL in production.
+- `AUTH_TRUST_HOST=true`: required for the Cloudflare Worker host.
 
-OAuth callback URLs are `https://YOUR-DOMAIN/api/auth/callback/google` and `https://YOUR-DOMAIN/api/auth/callback/github`.
+OAuth callback URLs use `/api/auth/callback/google` and `/api/auth/callback/github`. Register the exact Preview hostname in the corresponding OAuth applications before testing provider login.
+
+## Cloudflare Workers
+
+This repository uses the OpenNext Cloudflare adapter for the existing Next.js 15 app.
+
+- Build: `npm run build`
+- Local Worker preview: `npm run preview`
+- Deploy command: `npm run deploy`
+
+Cloudflare Workers Builds is configured to create Worker Previews for non-production branches. The current production deploy command is intentionally disabled while the Preview is being validated. Do not enable production deployment or merge the deployment PR until the database adapter, runtime secrets, and OAuth callbacks have been verified.
 
 ## Local setup
 
@@ -31,10 +40,6 @@ OAuth callback URLs are `https://YOUR-DOMAIN/api/auth/callback/google` and `http
 4. Review the database target and backup policy, then apply the Prisma schema to the intended database.
 5. Run `npm run dev`.
 
-## Deployment gate
+## Preview readiness
 
-This branch is not a production release. Before connecting it to the existing Vercel project, configure a dedicated preview database and OAuth callback URLs, run a Preview deployment, and verify registration, duplicate-email handling, invalid-password handling, OAuth callbacks, session persistence, and sign-out. Do not run schema changes against a production database without explicit review and backup.
-
-## Important remaining hardening
-
-Before public production use, add a managed rate limiter for registration/login, email verification and password reset, automated tests, and end-to-end verification. The registration endpoint rejects mismatched Origin headers, but this is not a substitute for rate limiting. OAuth credentials and database connectivity must be configured in Vercel before those flows can work end-to-end.
+The sign-in screen can be inspected independently of provider credentials. Real registration, password login, OAuth callbacks, session persistence, and sign-out require a Cloudflare-compatible PostgreSQL connection and all runtime secrets to be configured in the Preview environment. Do not point a Preview at the production database.
