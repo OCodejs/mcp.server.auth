@@ -12,7 +12,7 @@
     "enabled": true,
     "redact_query_string": true
   },
-  "workers_dev": false,
+  "workers_dev": true,
   "preview_urls": true,
   "previews": {}
 }
