@@ -130,3 +130,12 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+.account-title { margin: 0 0 8px; font: 600 27px/1.2 'Space Grotesk',sans-serif; letter-spacing: -.04em; }
+.account-subtitle { margin: 0; color: #8e97a4; font-size: 12px; line-height: 1.65; }
+.account-active { color: #a5c9b0; }
+.account-logout { width: 100%; }
+@media (max-width: 700px) {
+  .account-layout .intro-panel { display: none; }
+  .account-layout { display: block; }
+}
