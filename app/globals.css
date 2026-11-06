@@ -139,3 +139,18 @@ a { color: inherit; }
   .account-layout .intro-panel { display: none; }
   .account-layout { display: block; }
 }
+
+/* Keep the mobile auth viewport steady and prevent iOS double-tap zoom. */
+html, body {
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+button, a, input, label {
+  touch-action: manipulation;
+}
+@media (max-width: 700px) {
+  /* Prevent Safari from auto-zooming when an input receives focus. */
+  .field input {
+    font-size: 16px;
+  }
+}
