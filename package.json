@@ -25,7 +25,8 @@
     "next-auth": "^5.0.0-beta.30",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "zod": "^4.1.5"
+    "zod": "^4.1.5",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
