@@ -6,6 +6,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { ensureProfileForUser } from "@/lib/profiles";
 
 const credentialsSchema = z.object({
   email: z.string().trim().email().max(254),
@@ -44,6 +45,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
     })
   ],
+  events: {
+    async createUser({ user }) {
+      if (user.id) await ensureProfileForUser(prisma, user as { id: string; name?: string | null; email?: string | null; image?: string | null });
+    }
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user?.id) token.sub = user.id;

@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { ensureProfileForUser } from "@/lib/profiles";
 
 const panelStyle = {
   width: "min(100% - 40px, 420px)",
@@ -10,6 +12,7 @@ const panelStyle = {
 export default async function AccountPage() {
   const session = await auth();
   if (!session?.user) redirect("/");
+  const profile = await ensureProfileForUser(prisma, session.user);
 
   return (
     <main style={{ minHeight: "100svh", background: "#000", color: "#f5f5f5", fontFamily: "'JetBrains Mono', ui-monospace, monospace" }}>
@@ -22,6 +25,11 @@ export default async function AccountPage() {
         <h1 style={{ fontSize: 25, lineHeight: 1.25, letterSpacing: "-.06em", margin: "0 0 10px" }}>Tài khoản OCodeJS</h1>
         <p style={{ color: "#888", fontSize: 12, lineHeight: 1.8, margin: "0 0 32px" }}>Phiên đăng nhập đang hoạt động. Thông tin tài khoản được hiển thị bên dưới.</p>
         <div style={{ borderTop: "1px solid #292929" }}>
+          <div style={{ padding: "18px 0", borderBottom: "1px solid #292929" }}>
+            <div style={{ color: "#777", fontSize: 10, marginBottom: 8 }}>PUBLIC PROFILE</div>
+            <a href={`/u/${profile.username}`} style={{ color: "#c5d6ff", fontSize: 13 }}>ocodejs.dev/u/{profile.username}</a>
+            <a href="/account/profile" style={{ display: "block", color: "#999", fontSize: 10, marginTop: 10 }}>EDIT PROFILE →</a>
+          </div>
           <div style={{ padding: "18px 0", borderBottom: "1px solid #292929" }}>
             <div style={{ color: "#777", fontSize: 10, marginBottom: 8 }}>TÊN HIỂN THỊ</div>
             <div style={{ fontSize: 13, overflowWrap: "anywhere" }}>{session.user.name || "Người dùng"}</div>
