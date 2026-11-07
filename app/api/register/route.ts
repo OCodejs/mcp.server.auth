@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { ensureProfileForUser } from "@/lib/profiles";
 
 export const runtime = "nodejs";
 
@@ -46,8 +47,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Không thể tạo tài khoản với email này." }, { status: 409 });
     }
     const passwordHash = await hash(parsed.data.password, 12);
-    await prisma.user.create({
-      data: { name: parsed.data.name, email, passwordHash }
+    await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: { name: parsed.data.name, email, passwordHash }
+      });
+      await ensureProfileForUser(tx, user);
     });
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch {
