@@ -1,9 +1,9 @@
 import { randomBytes } from "node:crypto";
-import type { Prisma, PrismaClient, User } from "@prisma/client";
+import type { Prisma, PrismaClient } from "@prisma/client";
 import { normalizeProfileUsername } from "@/lib/profile-username.mjs";
 
 type ProfileDb = Pick<Prisma.TransactionClient, "profile"> | Pick<PrismaClient, "profile">;
-type UserIdentity = Pick<User, "id" | "name" | "email" | "image">;
+type UserIdentity = { id: string; name?: string | null; email?: string | null; image?: string | null };
 
 export async function ensureProfileForUser(db: ProfileDb, user: UserIdentity) {
   const existing = await db.profile.findUnique({ where: { userId: user.id } });
