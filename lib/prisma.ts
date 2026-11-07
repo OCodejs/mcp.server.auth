@@ -3,29 +3,23 @@ import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-function getPrismaClient(): PrismaClient {
-  if (globalForPrisma.prisma) return globalForPrisma.prisma;
-
+function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error("DATABASE_URL is not configured for this Worker environment.");
   }
 
-  const adapter = new PrismaNeon({ connectionString });
-  const client = new PrismaClient({
-    adapter,
+  return new PrismaClient({
+    adapter: new PrismaNeon({ connectionString }),
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"]
   });
-
-  globalForPrisma.prisma = client;
-  return client;
 }
 
-// Lazy initialization keeps static Next.js builds independent of runtime secrets.
-export const prisma = new Proxy({} as PrismaClient, {
-  get(_target, property) {
-    const client = getPrismaClient();
-    const value = Reflect.get(client, property, client);
-    return typeof value === "function" ? value.bind(client) : value;
-  }
-});
+// Export a real PrismaClient instance. Auth.js PrismaAdapter inspects adapter
+// methods and properties, so wrapping PrismaClient in a JavaScript Proxy breaks
+// adapter introspection and can cause authentication requests to hang.
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
