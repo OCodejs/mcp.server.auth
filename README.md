@@ -31,6 +31,15 @@ OAuth callback URLs are `https://YOUR-DOMAIN/api/auth/callback/google` and `http
 4. Review the database target and backup policy, then apply the Prisma schema to the intended database.
 5. Run `npm run dev`.
 
+## Readiness endpoint
+
+- `GET /api/health` returns a minimal, non-cacheable readiness response.
+- It requires the Preview/Production runtime to provide `DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL`, and both Google/GitHub OAuth client credentials.
+- It runs a read-only `SELECT 1` against PostgreSQL before reporting `ready`.
+- Missing configuration returns `503 not_configured`; database connectivity failure returns `503 unavailable`.
+- The response never reveals which secret is missing, database errors, connection strings, or provider credentials.
+- A ready response verifies configuration and database connectivity only; it does not replace end-to-end registration, OAuth callback, session, and logout tests.
+
 ## Deployment gate
 
 This branch is not a production release. Before connecting it to the existing Vercel project, configure a dedicated preview database and OAuth callback URLs, run a Preview deployment, and verify registration, duplicate-email handling, invalid-password handling, OAuth callbacks, session persistence, and sign-out. Do not run schema changes against a production database without explicit review and backup.
