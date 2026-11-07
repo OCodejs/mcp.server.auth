@@ -26,7 +26,7 @@ export async function POST(_request: Request, context: { params: Promise<{ usern
   try {
     await prisma.$transaction([
       prisma.profileFollow.create({ data: { followerId: resolved.actor.id, followedId: resolved.target.id } }),
-      prisma.profileActivity.create({ data: { profileId: resolved.target.id, eventType: "follow", summary: `@ ${resolved.actor.username} started following this profile`, metadata: { actorUsername: resolved.actor.username } } })
+      prisma.profileActivity.create({ data: { profileId: resolved.target.id, eventType: "follow", summary: `@${resolved.actor.username} started following this profile`, metadata: { actorUsername: resolved.actor.username } } })
     ]);
   } catch (error) {
     if ((error as { code?: string })?.code !== "P2002") throw error;
