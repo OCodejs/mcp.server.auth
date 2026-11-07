@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { hasSameOrigin } from "@/lib/request-security";
 import { ensureProfileForUser } from "@/lib/profiles";
 
 export const runtime = "nodejs";
@@ -11,6 +12,7 @@ const schema = z.object({
 }).strict();
 
 export async function POST(request: Request) {
+  if (!hasSameOrigin(request)) return NextResponse.json({ error: "ORIGIN_NOT_ALLOWED" }, { status: 403 });
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   const body = await request.json().catch(() => null);
@@ -30,6 +32,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!hasSameOrigin(request)) return NextResponse.json({ error: "ORIGIN_NOT_ALLOWED" }, { status: 403 });
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   const body = await request.json().catch(() => null);
