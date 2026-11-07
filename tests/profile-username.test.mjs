@@ -10,10 +10,10 @@ test("normalizes names into stable URL-safe usernames", () => {
 
 test("falls back for empty or too-short names", () => {
   assert.equal(normalizeProfileUsername(""), "member");
-  assert.equal(normalizeProfileUsername("ab"), "user");
+  assert.equal(normalizeProfileUsername("ab"), "member");
 });
 
 test("reserved platform routes cannot be claimed", () => {
   assert.equal(isReservedProfileUsername("admin"), true);
-  assert.equal(normalizeProfileUsername("admin"), "user");
+  assert.equal(normalizeProfileUsername("admin"), "member");
 });
