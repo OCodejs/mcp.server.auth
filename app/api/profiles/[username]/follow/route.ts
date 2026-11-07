@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { hasSameOrigin } from "@/lib/request-security";
 import { ensureProfileForUser } from "@/lib/profiles";
 
 export const runtime = "nodejs";
@@ -18,6 +19,7 @@ async function resolveProfiles(username: string) {
 }
 
 export async function POST(_request: Request, context: { params: Promise<{ username: string }> }) {
+  if (!hasSameOrigin(_request)) return NextResponse.json({ error: "ORIGIN_NOT_ALLOWED" }, { status: 403 });
   const { username } = await context.params;
   const resolved = await resolveProfiles(username);
   if ("response" in resolved) return resolved.response;
@@ -33,6 +35,7 @@ export async function POST(_request: Request, context: { params: Promise<{ usern
 }
 
 export async function DELETE(_request: Request, context: { params: Promise<{ username: string }> }) {
+  if (!hasSameOrigin(_request)) return NextResponse.json({ error: "ORIGIN_NOT_ALLOWED" }, { status: 403 });
   const { username } = await context.params;
   const resolved = await resolveProfiles(username);
   if ("response" in resolved) return resolved.response;
