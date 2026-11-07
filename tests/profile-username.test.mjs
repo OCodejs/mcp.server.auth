@@ -9,7 +9,7 @@ test("normalizes names into stable URL-safe usernames", () => {
 });
 
 test("falls back for empty or too-short names", () => {
-  assert.equal(normalizeProfileUsername(""), "user");
+  assert.equal(normalizeProfileUsername(""), "member");
   assert.equal(normalizeProfileUsername("ab"), "user");
 });
 
