@@ -7,6 +7,7 @@ OCode.js profiles belong to OCode.js accounts, not GitHub accounts. The immutabl
 - Email/password registration creates the User and Profile in one PostgreSQL transaction.
 - Auth.js OAuth `createUser` event provisions profiles for new Google/GitHub OAuth users.
 - Existing users are provisioned idempotently when they open Account or call `GET /api/profile/me`.
+- Profile README content is rendered as Markdown with raw HTML disabled; unsafe URL protocols are filtered by the Markdown renderer.
 - Profile settings are owner-only and include display name, bio, avatar, website, location, timezone, status, README text, visibility and activity visibility.
 - Public profile route exposes public fields only; email and internal user ID are not included.
 - Follow/unfollow, followers and following lists.
