@@ -5,8 +5,12 @@ const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not configured for this Worker environment.");
+  // `next build` imports every route module while collecting page data, but no
+  // query runs at that point and the Neon adapter only connects on first use.
+  // Allow the build to proceed without DATABASE_URL; still fail loudly at runtime.
+  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+  if (!connectionString && !isBuildPhase) {
+    throw new Error("DATABASE_URL is not configured for this environment.");
   }
 
   return new PrismaClient({
